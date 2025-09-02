@@ -78,11 +78,15 @@ export const InputField: React.FC<InputFieldProps> = ({
           aria-describedby={describedBy}
           type={internalType}
           className={clsx(
-            'flex-1 bg-transparent outline-none',
-            sizeClasses[size],
-            'placeholder-gray-400'
+            "w-full flex-1 rounded-xl border border-gray-300 bg-white px-4 py-2 text-sm text-gray-900 shadow-sm outline-none transition duration-200 ease-in-out",
+            "focus:border-blue-500 focus:ring-2 focus:ring-blue-400",
+            "placeholder-gray-400",
+            disabled && "cursor-not-allowed bg-gray-100 text-gray-500 opacity-70",
+            invalid && "border-red-500 focus:ring-red-400",
+            sizeClasses[size]
           )}
         />
+
 
         {/* clear button */}
         {clearable && value && !disabled && (

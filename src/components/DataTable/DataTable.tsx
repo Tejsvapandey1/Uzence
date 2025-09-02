@@ -80,12 +80,12 @@ export function DataTable<T extends Record<string, any>>({
 
   return (
     <div className="w-full overflow-x-auto rounded-xl shadow-md border border-gray-200">
-      <table className="min-w-full divide-y divide-gray-200 text-sm">
+      <table className="min-w-full text-sm border border-gray-200 rounded-lg overflow-hidden shadow-sm">
         {/* Sticky, styled header */}
-        <thead className="bg-gray-100 sticky top-0 z-10">
+        <thead className="bg-gray-100 sticky top-0 z-10 shadow-sm">
           <tr>
             {selectable && (
-              <th className="px-4 py-3">
+              <th className="px-4 py-3 w-12">
                 <input
                   type="checkbox"
                   aria-label="Select all rows"
@@ -95,13 +95,15 @@ export function DataTable<T extends Record<string, any>>({
                 />
               </th>
             )}
-            {columns.map((col) => (
+            {columns.map((col, idx) => (
               <th
                 key={col.key}
                 scope="col"
                 className={clsx(
-                  'px-4 py-3 text-left font-semibold text-gray-700 uppercase tracking-wide select-none',
-                  col.sortable && 'cursor-pointer hover:text-blue-600'
+                  'px-6 py-3 text-left text-gray-700 font-semibold uppercase tracking-wide select-none text-sm',
+                  col.sortable && 'cursor-pointer hover:text-blue-600 transition-colors',
+                  idx === 0 && 'rounded-tl-lg',
+                  idx === columns.length - 1 && !selectable && 'rounded-tr-lg'
                 )}
                 onClick={() => toggleSort(col.key, col.sortable)}
                 aria-sort={
@@ -111,9 +113,7 @@ export function DataTable<T extends Record<string, any>>({
                 <div className="flex items-center gap-1">
                   <span>{col.title}</span>
                   {col.sortable && sortKey === col.key && (
-                    <span aria-hidden className="text-xs">
-                      {sortDir === 'asc' ? '▲' : '▼'}
-                    </span>
+                    <span aria-hidden className="text-xs">{sortDir === 'asc' ? '▲' : '▼'}</span>
                   )}
                 </div>
               </th>
@@ -122,12 +122,12 @@ export function DataTable<T extends Record<string, any>>({
         </thead>
 
         {/* Body */}
-        <tbody className="divide-y divide-gray-200 bg-white">
+        <tbody className="bg-white divide-y divide-gray-200">
           {loading ? (
             <tr>
               <td
                 colSpan={columns.length + (selectable ? 1 : 0)}
-                className="px-4 py-10 text-center text-gray-500"
+                className="px-6 py-10 text-center text-gray-500"
               >
                 <span className="animate-pulse">Loading...</span>
               </td>
@@ -136,7 +136,7 @@ export function DataTable<T extends Record<string, any>>({
             <tr>
               <td
                 colSpan={columns.length + (selectable ? 1 : 0)}
-                className="px-4 py-10 text-center text-gray-400 italic"
+                className="px-6 py-10 text-center text-gray-400 italic"
               >
                 {emptyText}
               </td>
@@ -146,12 +146,14 @@ export function DataTable<T extends Record<string, any>>({
               <tr
                 key={idx}
                 className={clsx(
-                  'transition-colors hover:bg-blue-50',
+                  'transition-colors duration-200',
+                  idx % 2 === 0 ? 'bg-gray-50' : 'bg-white',
+                  'hover:bg-blue-50',
                   selected.has(idx) && 'bg-blue-100'
                 )}
               >
                 {selectable && (
-                  <td className="px-4 py-3">
+                  <td className="px-4 py-3 w-12">
                     <input
                       type="checkbox"
                       checked={selected.has(idx)}
@@ -161,8 +163,14 @@ export function DataTable<T extends Record<string, any>>({
                     />
                   </td>
                 )}
-                {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-gray-700">
+                {columns.map((col, colIdx) => (
+                  <td
+                    key={col.key}
+                    className={clsx(
+                      'px-6 py-4 text-gray-700',
+                      colIdx === 0 && 'font-medium text-gray-900'
+                    )}
+                  >
                     {col.render ? col.render(row[col.dataIndex], row) : String(row[col.dataIndex])}
                   </td>
                 ))}
@@ -171,6 +179,7 @@ export function DataTable<T extends Record<string, any>>({
           )}
         </tbody>
       </table>
+
     </div>
   )
 }

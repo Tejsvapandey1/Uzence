@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react'
 import { DataTable } from './DataTable'
+import type { Column } from './DataTable'
 
 type Row = { id: number; name: string; age: number }
 
@@ -17,7 +18,7 @@ const data: Row[] = [
   { id: 3, name: 'Charlie', age: 28 },
 ]
 
-const columns = [
+const columns: Column<Row>[] = [
   { key: 'id', title: 'ID', dataIndex: 'id', sortable: true },
   { key: 'name', title: 'Name', dataIndex: 'name', sortable: true },
   { key: 'age', title: 'Age', dataIndex: 'age', sortable: true },
